@@ -64,3 +64,9 @@
     background: #454545;
     color: #eee;
 }
+
+@media only screen and (max-width: 600px) {
+    .score {
+        font-size: 1em;
+    }
+}
