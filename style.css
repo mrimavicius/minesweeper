@@ -3,7 +3,6 @@
     padding: 0;
     font-family: monospace;
     font-weight: bold;
-    font-size: 1.1em;
     background: #eee;
     color: #454545;
 }
@@ -65,8 +64,8 @@
     color: #eee;
 }
 
-@media only screen and (max-width: 600px) {
+@media (max-width: 600px) {
     .score {
-        font-size: 1em;
+        font-size: 1.2em;
     }
 }
