@@ -3,72 +3,81 @@ const score = document.querySelector(".score") as HTMLElement
 const playAgain = document.querySelector(".playAgain") as HTMLButtonElement
 
 let counter: number = 0
-
-
-appendSquares()
-
-const squares = document.querySelectorAll(".square") as NodeListOf<HTMLElement>
-
-startGame()
+let gameOver = false
 
 function appendSquares(): void {
 
+    playAgain.style.display = "none"
+
+    gameOver = false
+
+    game.innerHTML = ""
+
+    counter = 0
+
+    score.innerHTML = `
+        POINTS: ${counter}
+        `
+
     const random = () => Math.floor(Math.random() * 100 + 1)
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 80; i++) {
 
-        let bomb = random() > 10 ? "" : "bomb"
-        // console.log(bomb)
-        game.innerHTML +=
-            `
-        <div class="square ${bomb}"></div>
+        let bomb = random() > 8 ? "" : "bomb"
+
+        game.innerHTML += `
+        <div class="square ${bomb}" id="${i}"></div>
         `
     }
 
+    const squares = document.querySelectorAll(".square") as NodeListOf<HTMLElement>
+    squares.forEach(x => x.onclick = startGame)
+
 }
 
-function startGame(): void {
+function startGame(e): void {
 
-    squares.forEach(x => {
+    if (gameOver)
+        return
 
-        x.style.background = ""
+    const target = e.target as HTMLButtonElement
 
-        x.onclick = function (e): void {
+    if (target.className.includes("bomb")) {
+        target.style.background = "#D83A56"
+        target.innerHTML = `<i class="fa-solid fa-bomb"></i>`
 
-            const target = e.target as HTMLButtonElement
+        score.innerHTML = `
+                GAME OVER! Your score: ${counter}
+                `
 
-            if (target.className.includes("bomb")) {
-                x.style.background = "red"
-                alert(`Game over! Your score is ${counter}`)
-                stopGame()
-            }
+        gameOver = true
 
-            if (!target.className.includes("bomb")) {
-                x.style.background = "green"
-                counter++
-                updatePoints()
-            }
+        playAgain.style.display = "block"
+        return showBombs(target.id)
+    } else {
+        if (target.className.includes("defused"))
+            return
+
+        counter++
+
+        score.innerHTML = `
+        POINTS: ${counter}
+        `
+
+        target.classList.add("defused")
+        target.style.background = "#66DE93"
+    }
+}
+
+function showBombs(id: string): void {
+    const squares = document.querySelectorAll(".square") as NodeListOf<HTMLElement>
+
+    squares.forEach((x, i) => {
+        if (x.className.includes("bomb") && i !== Number(id)) {
+            x.innerHTML = `<i class="fa-solid fa-bomb"></i>`
         }
     })
 }
 
-function updatePoints(): void {
-    score.innerHTML =
-        `
-    POINTS: ${counter}
-    `
-}
-
-function stopGame(): void {
-    squares.forEach(x => {
-        x.onclick = null
-    })
-}
-
-playAgain.onclick = function () {
-    startGame()
-
-    counter = 0
-
-    updatePoints()
-}
+playAgain.onclick = appendSquares
+appendSquares()

@@ -5,6 +5,7 @@
     font-weight: bold;
     font-size: 1.1em;
     background: #eee;
+    color: #454545;
 }
 
 .container {
@@ -15,25 +16,51 @@
 }
 
 .score {
-    margin: 1em;
+    display: flex;
+    align-items: center;
+    height: 10vh;
+    font-size: 2em;
 }
 
 .game {
     display: grid;
-    height: 80vh;
-    width: 80%;
-    grid-template-columns: repeat(10, 1fr);
+    height: 75vh;
+    width: 95%;
+    grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(10, 1fr);
-    border: 1px solid black;
+    border: 1px solid #454545;
 }
 
 .square {
-    border: 1px solid black;
+    border: 1px solid #454545;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.square:hover {
+    transform: scale(1.05);
+}
+
+.square > i {
+    font-size: 1.5em;
+    background: transparent;
 }
 
 .playAgain {
-    cursor: pointer;
+    height: 10vh;
     margin: 1em;
-    padding: 1em;
+    padding: 0 1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+    border: 2px solid #454545;
+}
+
+.playAgain:hover {
+    background: #454545;
+    color: #eee;
 }

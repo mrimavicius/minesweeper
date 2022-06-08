@@ -3,51 +3,57 @@ const game = document.querySelector(".game");
 const score = document.querySelector(".score");
 const playAgain = document.querySelector(".playAgain");
 let counter = 0;
-appendSquares();
-const squares = document.querySelectorAll(".square");
-startGame();
+let gameOver = false;
 function appendSquares() {
+    playAgain.style.display = "none";
+    gameOver = false;
+    game.innerHTML = "";
+    counter = 0;
+    score.innerHTML = `
+        POINTS: ${counter}
+        `;
     const random = () => Math.floor(Math.random() * 100 + 1);
-    for (let i = 0; i < 100; i++) {
-        let bomb = random() > 10 ? "" : "bomb";
-        // console.log(bomb)
-        game.innerHTML +=
-            `
-        <div class="square ${bomb}"></div>
+    for (let i = 0; i < 80; i++) {
+        let bomb = random() > 8 ? "" : "bomb";
+        game.innerHTML += `
+        <div class="square ${bomb}" id="${i}"></div>
         `;
     }
+    const squares = document.querySelectorAll(".square");
+    squares.forEach(x => x.onclick = startGame);
 }
-function startGame() {
-    squares.forEach(x => {
-        x.style.background = "";
-        x.onclick = function (e) {
-            const target = e.target;
-            if (target.className.includes("bomb")) {
-                x.style.background = "red";
-                alert(`Game over! Your score is ${counter}`);
-                stopGame();
-            }
-            if (!target.className.includes("bomb")) {
-                x.style.background = "green";
-                counter++;
-                updatePoints();
-            }
-        };
+function startGame(e) {
+    if (gameOver)
+        return;
+    const target = e.target;
+    if (target.className.includes("bomb")) {
+        target.style.background = "#D83A56";
+        target.innerHTML = `<i class="fa-solid fa-bomb"></i>`;
+        score.innerHTML = `
+                GAME OVER! Your score: ${counter}
+                `;
+        gameOver = true;
+        playAgain.style.display = "block";
+        return showBombs(target.id);
+    }
+    else {
+        if (target.className.includes("defused"))
+            return;
+        counter++;
+        score.innerHTML = `
+        POINTS: ${counter}
+        `;
+        target.classList.add("defused");
+        target.style.background = "#66DE93";
+    }
+}
+function showBombs(id) {
+    const squares = document.querySelectorAll(".square");
+    squares.forEach((x, i) => {
+        if (x.className.includes("bomb") && i !== Number(id)) {
+            x.innerHTML = `<i class="fa-solid fa-bomb"></i>`;
+        }
     });
 }
-function updatePoints() {
-    score.innerHTML =
-        `
-    POINTS: ${counter}
-    `;
-}
-function stopGame() {
-    squares.forEach(x => {
-        x.onclick = null;
-    });
-}
-playAgain.onclick = function () {
-    startGame();
-    counter = 0;
-    updatePoints();
-};
+playAgain.onclick = appendSquares;
+appendSquares();
